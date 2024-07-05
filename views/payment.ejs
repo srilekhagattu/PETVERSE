@@ -1,0 +1,273 @@
+<%-include('./partials/top.ejs') %> 
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Nanum+Gothic&display=swap" rel="stylesheet">
+  <style>
+    .invalid {
+      border: 2px solid red;
+    }
+    .full{
+      display: flex;
+      flex-wrap: wrap;
+      height: 100%;
+      margin-top: 7px;
+       }
+       .form{
+        width: 750px;
+        border-radius: 1px solid #bababa;
+        height: 100%;
+       }
+       #my-form{
+        width: 593px;
+        margin-top: 19px;
+        margin-left: 82px;
+       }
+       label{
+        margin-top: 10px;
+        margin-bottom: 2px;
+        margin-left: 0px;
+        margin-right: 0px;
+       }
+       .pa{
+        font-size: 40px;
+        margin: 0px 640px;
+        font-family: 'Nanum Gothic', sans-serif;
+        margin-top: 30px;
+       }
+       legend{
+        margin-left: 29px;
+        color: #747474;
+        margin-top: 50px;
+       }
+       .form2{
+        
+        background-color: white;
+        margin-top: 39px;
+        width: 561px;
+       }
+       .ok{
+        width: 100px;
+        margin: 20px;
+       }
+       .again{
+        display: flex;
+        flex-wrap: wrap;
+       }
+       img{
+        width: 70px;
+       }
+       .one{
+        display: flex;
+        flex-wrap: wrap;
+        border-bottom: 1px solid #00000040;
+             }
+             h4{
+              padding: 10px;
+              margin-left: 310px;
+             }
+             .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+  </style>
+  <link rel="stylesheet" href="css/payment.css">
+</head>
+<body>
+  <p class="pa"><b>CheckOut</b></p>
+  <div class="full">
+  <div class="form">    
+<legend>PAYMENT DETAILS</legend>
+
+<form id="my-form" action="/paymentcnf" method="post">
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Sathwik" required>
+    <div class="error-message" id="name-error"></div> <!-- Error message container -->
+
+    <label for="address">Address:</label>
+    <input type="text" id="address" name='address' placeholder="FlatNo:XXXXXX   CityPin:XXXXXX" required>
+    <div class="error-message" id="address-error"></div> <!-- Error message container -->
+
+    <label for="account-number">Account Number:</label>
+    <input type="text" id="account-number" placeholder="XXXX XXXX XXXX" required>
+    <div class="error-message" id="account-number-error"></div> <!-- Error message container -->
+
+    <label for="cvv">CVV:</label>
+    <input type="password" id="cvv" placeholder="XXX" required>
+    <div class="error-message" id="cvv-error"></div> <!-- Error message container -->
+
+    <label for="exp-date">Expiry Date:</label>
+    <input type="text" id="exp-date" placeholder="MM/YYYY" required>
+    <div class="error-message" id="exp-date-error"></div> <!-- Error message container -->
+
+    <button type="submit">Place Order</button>
+  </form>
+
+</div>
+<div class="form2">
+  <legend>YOUR ORDER</legend>
+  <div class="again">
+    <% let totalPrice = 0 %>
+    <% order.items.forEach(item => { %>
+      <div class="one">
+  <div class="ok"> <img src="<%= item.image %>" alt=""> </div>
+  <div class="ok"><%= item.title %></div>
+  <div class="ok"><%= item.quantity %></div>
+  <div class="ok"><%= item.price %></div>
+</div>
+  <% let itemTotal = item.price * item.quantity %>
+  <% totalPrice += itemTotal %>
+  <% }) %>
+
+  <h4>Total Price: Rs. <%= totalPrice %></h4>
+</div>
+</div>
+</div>
+</div>
+<script>
+  const form = document.getElementById("my-form");
+  const accountNumberInput = document.getElementById("account-number");
+  const cvvInput = document.getElementById("cvv");
+  const expDateInput = document.getElementById("exp-date");
+const addressInput=document.getElementById('address')
+  // Regex patterns for validation
+  const accountNumberRegex = /^[0-9]{4} [0-9]{4} [0-9]{4}$/;
+  const cvvRegex = /^[0-9]{3}$/;
+  const expDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/;
+ 
+  function validateName(input) {
+    const nameError = document.getElementById("name-error");
+
+    if (input.value.trim() === "") {
+      nameError.textContent = "Name is required";
+      input.classList.add("invalid");
+    } else {
+      nameError.textContent = ""; // Clear error message
+      input.classList.remove("invalid");
+    }
+  }
+
+  // Validation for Address
+  function validateAddress(input) {
+    const addressError = document.getElementById("address-error");
+
+    if (input.value.trim() === "") {
+      addressError.textContent = "Address is required";
+      input.classList.add("invalid");
+    } else {
+      addressError.textContent = ""; // Clear error message
+      input.classList.remove("invalid");
+    }
+  }
+
+  // Validation for Account Number
+  function validateAccountNumber(input) {
+    const accountNumberError = document.getElementById("account-number-error");
+    const accountNumberRegex = /^[0-9]{4} [0-9]{4} [0-9]{4}$/;
+
+    if (!accountNumberRegex.test(input.value)) {
+      accountNumberError.textContent = "Enter valid account number";
+      input.classList.add("invalid");
+    } else {
+      accountNumberError.textContent = ""; // Clear error message
+      input.classList.remove("invalid");
+    }
+  }
+
+
+  function validateCVV(input) {
+    const cvvError = document.getElementById("cvv-error");
+    const cvvRegex = /^[0-9]{3}$/;
+
+    if (!cvvRegex.test(input.value)) {
+      cvvError.textContent = "Enter valid CVV";
+      input.classList.add("invalid");
+    } else {
+      cvvError.textContent = ""; // Clear error message
+      input.classList.remove("invalid");
+    }
+  }
+
+  // Validation for Expiry Date
+  function validateExpDate(input) {
+    const expDateError = document.getElementById("exp-date-error");
+    const expDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/;
+
+    if (!expDateRegex.test(input.value)) {
+      expDateError.textContent = "Enter valid expiry date (MM/YYYY)";
+      input.classList.add("invalid");
+    } else {
+      expDateError.textContent = ""; // Clear error message
+      input.classList.remove("invalid");
+    }
+  }
+
+  // Attach input event listeners to each input field
+  document.getElementById("name").addEventListener("input", function () {
+    validateName(this);
+  });
+
+  document.getElementById("address").addEventListener("input", function () {
+    validateAddress(this);
+  });
+
+  document.getElementById("account-number").addEventListener("input", function () {
+    validateAccountNumber(this);
+  });
+
+  document.getElementById("cvv").addEventListener("input", function () {
+    validateCVV(this);
+  });
+
+  document.getElementById("exp-date").addEventListener("input", function () {
+    validateExpDate(this);
+  });
+ 
+  
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (validateForm()) {
+      // Form is valid, submit it
+      form.submit();
+      alert("Order placed successfully");
+    } else {
+      // Form is invalid, show an alert
+      alert("Please correct the errors in the form");
+    }
+  });
+
+  function validateForm() {
+    let isValid = true;
+
+    // Validate Name
+    const nameInput = document.getElementById("name");
+    // ... (Validation for other fields as previously provided)
+
+    // Check each field's validity and set isValid accordingly
+    if (nameInput.classList.contains("invalid")) {
+      isValid = false;
+    }
+    if (addressInput.classList.contains("invalid")) {
+      isValid = false;
+    }
+    if (accountNumberInput.classList.contains("invalid")) {
+      isValid = false;
+    }
+    if (cvvInput.classList.contains("invalid")) {
+      isValid = false;
+    }
+    if (expDateInput.classList.contains("invalid")) {
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+
+</script>
+
+  </script>

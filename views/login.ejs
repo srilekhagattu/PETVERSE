@@ -1,0 +1,241 @@
+<%-include('./partials/top.ejs') %>
+<script src="https://kit.fontawesome.com/ea17de72ce.js" crossorigin="anonymous"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/login1.css">
+<style>
+    .input_field {
+      position: relative;
+   }
+
+   .invalid {
+      border: 2px solid red;
+   }
+
+   .error-message {
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      color: red;
+      font-size: 10px;
+   }
+
+   body{
+      background: url('static/images/login_back.jpg') no-repeat center / cover;
+   }
+   .hide {
+            display: none;
+        }
+        .show {
+            display: block;
+            color: red;
+        }
+        .error_username{
+            position: relative;
+        }
+        .err{
+            margin-left: 0.8rem;
+            position: absolute;
+            font-size: 13px;
+        }
+</style>
+
+<body>
+    <div class="main">
+        <input type="checkbox" id="chk" aria-hidden="true">
+        <div class="signup">
+            <form action="/register" id="signform" method="post">
+                <label for="chk" aria-hidden="true">Sign up</label>
+                <div class="input_group">
+                    <div class="input_field">
+                        <i class="fa-solid fa-signature"></i>
+                        <input type="text" name="fullname" placeholder="Full Name" required id="fname">
+                    </div>
+                    <div class="input_field">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" name="phno" placeholder="Phone: 10 digits" required id="phonenumber">
+                        <span class="error-message" id="phone-error"></span>
+                    </div>
+                    <div class="input_field">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="text" name="email" placeholder="Email" required id="emailid">
+                        <span class="error-message" id="email-error"></span>
+                    </div>
+                    <div class="input_field">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" name="username" placeholder="Username" required id="uname">
+                        <span class="error-message" id="username-error"></span>
+                    </div>
+
+                    <div class="input_field">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password: min-len:8" required id="password1">
+                        <span class="error-message" id="password-error"></span>
+                    </div>
+                    <div class="input_field">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" name="cnfpassword" placeholder="Confirm Password" required id="password2">
+                        <span class="error-message" id="confirm-password-error"></span>
+                    </div>
+                </div>
+                <button type="submit" id="signbutton">Sign up</button>
+            </form>
+        </div>
+        <div class="login" >
+            <form action="/login" id="loginform" method="post">
+                <label for="chk" aria-hidden="true">Login</label>
+                <div class="input_field">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" placeholder="Username" class="setValueDefault" required id="loginusername" name="lusername">
+                </div>
+
+                <div class="input_field">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" placeholder="Password" required id="loginpassword" name="lpassword">
+                </div>
+
+                <button type="submit" >Login</button>
+            </form>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="js/login.js"></script>
+    <script>
+        const signform = document.querySelector("#signform")
+        const loginform = document.querySelector("#loginform")
+        const fullname = document.querySelector("#fname")
+        const phonenumber = document.getElementById('phonenumber')
+        const signbutton = document.getElementById('signbutton')
+        const emailid = document.getElementById('emailid')
+        const password1 = document.getElementById('password1')
+        const password2 = document.getElementById('password2')
+        const loginusername = document.getElementById('loginusername')
+        const loginpassword = document.getElementById('loginpassword')
+        const uname = document.getElementById('uname')
+
+        const phoneRegex = /^((\+91)|\+)?[6789]\d{9}$/;
+        const emailRegex = /^[a-zA-Z0-9+_-]+@[a-zA-Z0-9-]+[.]+[a-z]+$/;
+        const passwordRegex = /^.{8,}$/;
+        const unameregex = /^(?=.*[A-Za-z])(?=.*\d)[\w]{6,}$/;
+
+        signform.addEventListener("submit", function(event) {
+            if (!validateForm()) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+
+        // Add input event listeners for real-time validation
+        phonenumber.addEventListener("input", validatePhone);
+        emailid.addEventListener("input", validateEmail);
+        password1.addEventListener("input", validatePassword);
+        password2.addEventListener("input", validateConfirmPassword);
+        uname.addEventListener("input", validateUsername);
+
+        function validateForm() {
+            const isValid = (
+                validatePhone() &&
+                validateEmail() &&
+                validatePassword() &&
+                validateConfirmPassword() &&
+                validateUsername()
+            );
+
+            signbutton.disabled = !isValid; // Disable button if form is not valid
+            return isValid;
+        }
+
+        function validatePhone() {
+            const phoneNumberValue = phonenumber.value;
+            const phoneError = document.getElementById('phone-error');
+            if (phoneRegex.test(phoneNumberValue)) {
+                phonenumber.classList.remove("invalid");
+                phoneError.textContent = '';
+                return true;
+            } else {
+                phonenumber.classList.add("invalid");
+                phoneError.textContent = 'Please enter a valid phone number.';
+                return false;
+            }
+        }
+
+        function validateEmail() {
+            const emailValue = emailid.value;
+            const emailError = document.getElementById('email-error');
+            if (emailRegex.test(emailValue)) {
+                emailid.classList.remove("invalid");
+                emailError.textContent = '';
+                return true;
+            } else {
+                emailid.classList.add("invalid");
+                emailError.textContent = 'Please enter a valid email address.';
+                return false;
+            }
+        }
+
+        function validatePassword() {
+            const passwordValue = password1.value;
+            const passwordError = document.getElementById('password-error');
+            if (passwordRegex.test(passwordValue)) {
+                password1.classList.remove("invalid");
+                passwordError.textContent = '';
+                return true;
+            } else {
+                password1.classList.add("invalid");
+                passwordError.textContent = 'Password must be at least 8 characters long.';
+                return false;
+            }
+        }
+
+        function validateConfirmPassword() {
+            const confirmPasswordValue = password2.value;
+            const passwordValue = password1.value;
+            const confirmPassError = document.getElementById('confirm-password-error');
+            if (confirmPasswordValue === passwordValue) {
+                password2.classList.remove("invalid");
+                confirmPassError.textContent = '';
+                return true;
+            } else {
+                password2.classList.add("invalid");
+                confirmPassError.textContent = 'Passwords do not match.';
+                return false;
+            }
+        }
+
+        function validateUsername() {
+            const usernameValue = uname.value;
+            const usernameError = document.getElementById('username-error');
+            if (unameregex.test(usernameValue)) {
+                uname.classList.remove("invalid");
+                usernameError.textContent = '';
+                return true;
+            } else {
+                uname.classList.add("invalid");
+                usernameError.textContent = 'Username must be at least 6 characters long and include both letters and numbers.';
+                return false;
+            }
+        }
+        const username = document.querySelector('#uname');
+    // console.log('HII')
+    username.addEventListener('focusout', async () => {
+        const resp = await fetch('/ajaxusername', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ uname: username.value })
+        });
+        const resp2 = await resp.json()
+        console.log(resp2);
+        if (resp2.msg === false) {
+            document.querySelector('.typer').classList.remove('hide')
+            document.querySelector('.typer').classList.add('show')
+        } else {
+            document.querySelector('.typer').classList.remove('show')
+            document.querySelector('.typer').classList.add('hide')
+        }
+    })
+    </script>
+</body>
+</html>

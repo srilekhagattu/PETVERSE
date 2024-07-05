@@ -1,0 +1,146 @@
+<div class="navbar navbar-inverse" style="background-color: white;">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="navbar-header">
+          <button class="navbar-toggle" data-target="#mobile_menu" data-toggle="collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+         <a href="/main"><img src="static/images/logoo.png" alt="" style="width: 281px; height: 79px;"></a> 
+        </div>
+
+        <div class="navbar-collapse collapse" id="mobile_menu">
+          <ul class="nav navbar-nav">
+
+            <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 30px 20px; color: black;">Dogs<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/dogpet">Pets</a></li>
+                <li><a href="/dogfood">Food</a></li>
+                <li><a href="/doggrooming">Grooming</a></li>
+                <li><a href="/dogaccess">Accessories</a></li>
+                <li><a href="/dogbed">Beds</a></li>
+                <li><a href="/dogcloth">Clothing</a></li>
+                <li><a href="/dogtoy">Toys</a></li>
+              </ul>
+            </li>
+
+            <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 30px 20px; color: black;">Cats<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/catpet">Pets</a></li>
+                <li><a href="/catfood">Food</a></li>
+                <li><a href="/catgrooming">Grooming</a></li>
+                <li><a href="/cataccess">Accessories</a></li>
+                <li><a href="/catbed">Beds</a></li>
+                <li><a href="/catcloth">Clothing</a></li>
+                <li><a href="/cattoy">Toys</a></li>
+              </ul>
+            </li>
+
+            <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 30px 20px; color: black;">Saloon<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/saloonhyd">Hyderabad</a></li>
+                <li><a href="/saloonmum">Mumbai</a></li>
+                <li><a href="/saloonban">Bengaluru</a></li>
+                <li><a href="/saloonche">Chennai</a></li>
+              </ul>
+            </li>
+     
+          </ul>
+
+          <ul class="nav navbar-nav">
+            <li style="margin:19px 17px">
+              <form class="navbar-form" method="POST">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input type="search" name="search" id="searchbar" placeholder="Search Here..." class="form-control" style="padding: 2px 44px;" onkeyup="sendData(this)">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                  </div>
+                </div>
+              </form>
+            </li>
+          </ul>
+
+          <!-- Modal Trigger Button -->
+         
+
+          <div id="myModal" class="modal">
+            <div class="modal-content">
+              <span class="close" id="closeModal">&times;</span>
+              <section id="searchResults"></section>
+             
+            </div>
+          </div>
+
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/account" style="padding: 30px 20px; color: black;"><span class="glyphicon glyphicon-user"></span>Account</a></li>
+            <li><a href="/orders" style="padding: 30px 20px; color: black;"><i class="fa-solid fa-bag-shopping"></i>Orders</a></li>
+            <li><a href="/wish" style="padding: 30px 20px; color: black;"><i class="fa-regular fa-heart"></i>Wishlist</a></li>
+            <li><a href="/cart" style="padding: 30px 20px; color: black;"><i class="fa-solid fa-cart-shopping"></i>Cart</a></li>
+            <li><a href="/logout" style="padding: 30px 20px; color: black;">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add the JavaScript for the modal here -->
+<script>
+ // JavaScript for modal
+// JavaScript for modal
+// JavaScript for modal
+var modal = document.getElementById("myModal");
+var closeModalButton = document.getElementById("closeModal");
+
+closeModalButton.onclick = function () {
+  modal.style.display = "none";
+};
+
+// Close the modal when clicking outside of it
+window.onclick = function (event) {
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+};
+
+  function sendData(e) {
+  const searchResults = document.getElementById('searchResults');
+  let match = e.value.match(/^[a-zA-Z]*/);
+  let match2 = e.value.match(/\s*/);
+  if (match2[0] == e.value) {
+    searchResults.innerHTML = '';
+    return;
+  }
+  if (match[0] == e.value) {
+    fetch('search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ payload: e.value })
+    })
+    .then(res => res.json())
+    .then(data => {
+      let payload = data.payload;
+      searchResults.innerHTML = '';
+      if (payload.length < 1) {
+        searchResults.innerHTML = '<p>Nothing found</p>';
+        return;
+      }
+      payload.forEach((item, index) => {
+        if (index > 0) searchResults.innerHTML += '<hr>';
+        searchResults.innerHTML += `<form action="/search1" method="POST">
+          <input type="hidden" name="hellomoto" value="${item.name}">
+          <button type="submit" id='btnn' class='custom-button'>
+            <p>${item.name}</p>
+          </button>
+        </form>`;
+      });
+      // Display the modal when results are available
+      modal.style.display = "block";
+    })
+    .catch(error => {
+      console.error("Error:", error.message);
+      // Handle the error gracefully, e.g., display an error message
+    });
+  }
+}
+
+</script>

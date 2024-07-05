@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="https://kit.fontawesome.com/ea17de72ce.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<style>
+  .modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* Modal content */
+.modal-content {
+    background-color: #fff;
+   
+    padding: 20px;
+    border: 1px solid #888;
+    width: 21%;
+    margin: 61px 10px 3px 581px;
+}
+
+/* Close button */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+#btnn{
+     background-color: white;
+    border: #fff;
+}
+  .navbar{
+    margin-bottom: 0;
+  }
+ 
+    /* Custom CSS to override Bootstrap styles */
+    .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover {
+   
+    background-color: #dcd3d3;
+    }
+  body {
+    background-color: #ffed202e;
+
+  }
+
+  .container {
+
+    height: 90vh;
+  }
+
+  .card {
+    background-color: #ecedc1;
+    width: 400px;
+    padding: 10px;
+    border: 1px solid #eee;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-left: 30px;
+    margin-right: 10px;
+  }
+
+  .inner-card {
+    background: #fff;
+    padding: 10px;
+    border-radius: 5px
+  }
+
+  .heart {
+    cursor: pointer;
+    height: 35px;
+    width: 35px;
+    font-size: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #beb4aa;
+    border-radius: 50%;
+    background-color: #eee
+  }
+
+  .btn:focus {
+    color: #fff;
+    background-color: #025ce2;
+    border-color: #0257d5;
+    box-shadow: none
+  }
+
+  .its {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .ok {
+    margin-left: 30px;
+  }
+</style>
+
+
+  <body>
+    
+    <%-include('./partials/header.ejs') %> 
+
+    <p style="    height: 65px;
+    font-size: 40px;
+    border-bottom: 1px solid #bcaaaa;
+    padding: 10px 600px;">CART</p>
+     <% let totalPrice = 0 %>
+      <% if (cart === null || cart.items.length === 0) { %>
+        <p>Your cart is empty.</p>
+      <% } else { %>
+        <div class="its">
+          <% cart.items.forEach(item => { %>
+            <div class="ok">
+              <div class="card">
+                <div class="inner-card">
+                  <img src="<%=item.image%> " class="img-fluid rounded">
+                  <div class="d-flex justify-content-between align-items-center mt-3 px-2">
+                    <h4><%= item.title %></h4>
+                  </div>
+                  <div class="mt-2 px-2">
+                    <small><%= item.description %></small>
+                  </div>
+                  <div class="px-2">
+                    <h3>Rs. <%= item.price %></h3>
+                  </div>
+                  
+                  <form method="POST"  onchange="cartData(this)">
+                    <input type="hidden" name="productId" value="<%= item.productId %>">
+                    <div class="form-group px-2">
+                      <label for="quantity">Quantity:</label>
+                     <input type="hidden" value="<%= item.quantity %>" name="itemquantity">
+                      <select class="form-control" id="quantity" name="quantity" >
+                        <% for (let i = 1; i <= 10; i++) { %>
+                          <option value="<%= i %>" <%= item.quantity == i ? "selected" : "" %>><%=i%></option>
+                        <% } %>
+                      </select>
+                      <div class="but" style="display: flex;">
+                   
+                  </form>
+                  <form method="POST" action="/delete-item">
+                    <input type="hidden" name="productId" value="<%= item.productId %>">
+                    <button type="submit" class="btn btn-danger px-3">Delete</button>
+                  </form>
+                </div>
+                </div>
+                  <% let itemTotal = item.price * item.quantity %>
+                  <div class="px-2">
+                    
+                  </div>
+                  <% totalPrice += itemTotal %>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+        <div class="buy" style="border: 2px solid black;
+        padding: 8px 600px;" id="buyy">
+        <div class="px-2">
+          <h3>Total Price: Rs. <%= totalPrice %></h3>
+        </div>
+        <form method="POST" action="/buy-now">
+          <button type="submit" class="btn btn-primary">Buy Now</button>
+        </form>
+      </div>
+      <section id="sectionbuy"></section>
+        
+      <% } %>
+    </body>
+    <script>
+      function cartData(formElement) {
+        const sectionbuy = document.getElementById('sectionbuy');
+        const buyy = document.getElementById('buyy');
+        const formData = new FormData(formElement);
+        fetch('/update-cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(formData).toString(),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            let prodid = data.productId;
+            let quant = data.quantity;
+            let totalPrice = data.totalprice;
+            console.log(prodid);
+            console.log(quant);
+            buyy.style.display = "none";
+            sectionbuy.innerHTML = `
+              <div class="buy" style="border: 2px solid black; padding: 8px; width: 100%;">
+               <div style="justify-content:center; margin-left: 40%;">
+                <div class="px-2">
+                  <h3>Total Price: Rs. ${totalPrice}</h3>
+                </div>
+                <form method="POST" action="/buy-now">
+                  <button type="submit" class="btn btn-primary">Buy Now</button>
+                </form>
+                </div>
+              </div>
+            `;
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      }
+    </script>
+    
+</html>

@@ -1,0 +1,157 @@
+<%-include('./partials/top.ejs') %> 
+    <!-- <link rel="stylesheet" href="pc.css"> -->
+   
+    <script src="https://kit.fontawesome.com/e8fa2e31b4.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<style>
+     .navbar{
+    margin-bottom: 0;
+  }
+ 
+    /* Custom CSS to override Bootstrap styles */
+    .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover {
+   
+    background-color: #dcd3d3;
+    }
+    .products-navbar a{
+    text-decoration: none;
+    color: white;
+   }
+   a{
+    text-decoration: none;
+   }
+   .products-navbar ul{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+   }
+   li{
+    list-style: none;
+   }
+   .navp{
+    padding: 0 4vw;
+   }
+   .products-navbar{
+    height: 100%;
+    background-color: black;
+   }
+   .box{
+    border: 1px solid rgb(37, 37, 37);
+    display: flex;
+    margin: 15px 0px;
+    background-color: #cecece;
+    width: 100%;
+   }
+   .bottom{
+    text-align: center;
+   }
+    #p1{
+font-size: 65px;
+margin: 12px;
+   }
+    #p2{
+font-size: 15px;
+color: #5c5757;
+   }
+    #p3{
+font-size: 20px;
+margin: 28px;
+   }
+#pic{
+    margin: 51px 21px;
+}
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* Modal content */
+.modal-content {
+    background-color: #fff;
+   
+    padding: 20px;
+    border: 1px solid #888;
+    width: 21%;
+    margin: 61px 10px 3px 581px;
+}
+
+/* Close button */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+#btnn{
+     background-color: white;
+    border: #fff;
+}
+</style>
+<body>
+    <%-include('./partials/header.ejs') %> 
+    
+      <div class="products-navbar">
+        <ul class="navbar-nav">
+
+            <div class="navp">
+                <li id='list-hyd-button' class="nav-item">
+                    <a class="nav-link" href="/saloonhyd">Hyderabad</a>
+                </li>
+            </div>
+            <div class="navp">
+                <li id='list-bgr-button' class="nav-item">
+                    <a class="nav-link" href="saloonban">Banaglore</a>
+                </li>
+            </div>
+            <div class="navp">
+                <li id='list-che-button' class="nav-item">
+                    <a class="nav-link" href="saloonche">Chennai</a>
+                </li>
+            </div>
+            <div class="navp">
+                <li id='list-mum-button' class="nav-item">
+                    <a class="nav-link" href="saloonmum">Mumbai</a>
+                </li>
+            </div>
+            
+        </ul>
+    </div>
+    <div>
+        <%mumsaloons.forEach(mumsaloon=>{%>
+            <div class='box'>
+                <div class='img-box'>
+                    <form action="/mservice" method="post">
+                        <input type="hidden" name="mumsaloonid" value="<%= mumsaloon._id %>">
+                        <input type="hidden" name="mumsaloonname" value="<%= mumsaloon.saloonTitle %>">
+                        <button type="submit" id="pic"><img class='images' src="<%=mumsaloon.saloonImage %>"></img></form></button>
+                </div>
+            <div class='bottom'>
+            <p id="p1"><%= mumsaloon.saloonTitle %></p>
+            <p id="p2"><%= mumsaloon.saloonDescription %></p>
+            <p id="p3">Address:<%= mumsaloon.saloonAddress %></p>
+            </div>
+            </div>
+        <%}) %>
+    </div>
+    <%-include('./partials/footer.ejs') %> 
+</body>
+
+</html>
